@@ -13,6 +13,10 @@ class AddFavor(Schema):
 class Error(Schema):
     details: str
 
+
+class StatusOK(Schema):
+    status: str
+
 class CardSchema(Schema):
     id: int
     name: str
