@@ -8,6 +8,7 @@ class Card(models.Model):
     image = models.URLField()
     price = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    shutdown_time = models.CharField(max_length=50)
 
 class Favorite(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
