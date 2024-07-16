@@ -12,7 +12,7 @@ from profiles.models import Profile
 from web2_backend.settings import SECRET_KEY
 
 from .models import Card, Favorite
-from .schemas import CreateCard, AddFavor, Error, CardSchema, StatusOK
+from .schemas import CreateCard, AddFavor, Error, CardSchema, StatusOK, UpdateCardSchema
 from authtoken import AuthBearer
 
 router = Router()
@@ -54,3 +54,20 @@ def del_favorite(request, card_id:int):
         user = user
     )
     return (201, {'status': 'ok'})
+
+@router.post('/update_card', response={200: CardSchema, 409: Error, 400: Error}, auth=AuthBearer)
+def create_card(request, create_card: UpdateCardSchema):
+    data_from_wb = parse(create_card.target_url)
+    c = get_object_or_404(Card, create_card.id)
+    if create_card.name:
+        c.name = create_card.name
+    if create_card.category:
+        c.category = create_card.category
+    if create_card.price:
+        c.price = create_card.price
+    if create_card.url:
+        c.url = create_card.url
+    if create_card.image:
+        c.image = create_card.image
+    c.save()
+    return (200, c)

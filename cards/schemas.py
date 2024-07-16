@@ -23,4 +23,12 @@ class CardSchema(Schema):
     category: str
     price: int
     url: str
-    img: str
+    image: str
+
+class UpdateCardSchema(Schema):
+    id: int
+    name: Optional[str]
+    category: Optional[str]
+    price: Optional[int]
+    url: Optional[str]
+    image: Optional[str]
