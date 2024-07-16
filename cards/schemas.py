@@ -25,6 +25,7 @@ class CardSchema(Schema):
     url: str
     image: str
 
+
 class UpdateCardSchema(Schema):
     id: int
     name: Optional[str]

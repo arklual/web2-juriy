@@ -14,6 +14,8 @@ from web2_backend.settings import SECRET_KEY
 from .models import Card, Favorite
 from .schemas import CreateCard, AddFavor, Error, CardSchema, StatusOK, UpdateCardSchema
 from authtoken import AuthBearer
+from typing import List
+
 
 router = Router()
 
@@ -43,7 +45,7 @@ def add_favorite(request, addfavor: AddFavor):
     ).save()
     return (201, {'status': 'ok'})
 
-@router.delete('/del', response={200: StatusOK, 409: Error, 400: Error}, auth=AuthBearer)
+@router.delete('/del_favorite', response={200: StatusOK, 409: Error, 400: Error}, auth=AuthBearer)
 def del_favorite(request, card_id:int):
     card = get_object_or_404(Card, id=card_id)
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
@@ -71,3 +73,21 @@ def create_card(request, create_card: UpdateCardSchema):
         c.image = create_card.image
     c.save()
     return (200, c)
+
+@router.get('/get_favorite', response={200: List[CardSchema], 409: Error, 400: Error}, auth=AuthBearer)
+def get_favorite(request, start:int, count:int, sort:str):
+    if sort not in ['recent', 'oldest', 'price_upscending', 'price_descending']:
+        return (400, {'details': 'sort parameter is not correct!'})
+    payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
+    user_id = payload['user_id']
+    user = get_object_or_404(Profile, id=user_id)
+    if sort == 'price_upscending':
+        cards = Favorite.objects.filter(user = user).order_by('card__price')
+    elif sort == 'price_descending':
+        cards = Favorite.objects.filter(user = user).order_by('-card__price')
+    elif sort == 'recent':
+        cards = Favorite.objects.filter(user = user).order_by('-card__price')
+    elif sort == 'oldest':
+        cards = Favorite.objects.filter(user = user).order_by('-card__price')
+    cards = cards[start:(start+count)]
+    return (200, cards)
