@@ -14,8 +14,8 @@ from web2_backend.settings import SECRET_KEY
 from .models import Card, Favorite
 from .schemas import CreateCard, AddFavor, Error, CardSchema, StatusOK, UpdateCardSchema
 from authtoken import AuthBearer
-from typing import List
-
+from typing import List, Optional
+from categories.models import Category
 
 router = Router()
 
@@ -86,8 +86,41 @@ def get_favorite(request, start:int, count:int, sort:str):
     elif sort == 'price_descending':
         cards = Favorite.objects.filter(user = user).order_by('-card__price')
     elif sort == 'recent':
-        cards = Favorite.objects.filter(user = user).order_by('-card__price')
+        cards = Favorite.objects.filter(user = user).order_by('-card__price') # TODO: change sort
     elif sort == 'oldest':
-        cards = Favorite.objects.filter(user = user).order_by('-card__price')
+        cards = Favorite.objects.filter(user = user).order_by('-card__price') # TODO: change sort
+    cards = cards[start:(start+count)]
+    return (200, cards)
+
+@router.get('/get_cards', response={200: List[CardSchema], 409: Error, 400: Error})
+def get_cards(request, start:int, count:int, sort:str, 
+              time_start: Optional[str] = None, time_finish: Optional[str] = None, 
+              price_floor: Optional[int] = None, price_top: Optional[int] = None,
+              category: Optional[str] = None):
+    if sort not in ['recent', 'oldest', 'price_upscending', 'price_descending']:
+        return (400, {'details': 'sort parameter is not correct!'})
+    if time_start is None:
+        time_start = '01-01-2000'
+    if time_finish is None:
+        time_finish = '01-01-2100'
+    if price_floor is None:
+        price_floor = 0
+    if price_top is None:
+        price_top = 10000000000
+    time_start = datetime.strptime(time_start, '%m-%d-%Y').date()
+    time_finish = datetime.strptime(time_finish, '%m-%d-%Y').date()
+    cards = Card.objects.filter(price__gte=price_floor, price__lte=price_top).order_by('price')
+    # TODO: add filter by date
+    if category is not None:
+        category = get_object_or_404(Category, title=category)
+        cards = cards.filter(category=category)
+    if sort == 'price_upscending':
+        cards = cards.order_by('price')
+    elif sort == 'price_descending':
+        cards = cards.order_by('-price')
+    elif sort == 'recent':
+        cards = cards.order_by('-price')# TODO: change sort
+    elif sort == 'oldest':
+        cards = cards.order_by('-price')# TODO: change sort
     cards = cards[start:(start+count)]
     return (200, cards)
