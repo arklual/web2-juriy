@@ -13,5 +13,13 @@ class UserSignin(Schema):
     login: str = Field(..., min_length=1, max_length=60, required=True)
     password: str = Field(..., min_length=6, required=True)
 
+class UserConfirm(Schema):
+    login: str = Field(..., min_length=1, max_length=60, required=True)
+    password: str = Field(..., min_length=6, required=True)
+    code: str = Field(..., min_length=6, max_length=6, required=True)
+
 class Token(Schema):
     token: str
+
+class StatusOK(Schema):
+    status: str
