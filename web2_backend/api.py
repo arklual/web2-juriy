@@ -4,6 +4,9 @@ from django.db.utils import IntegrityError
 from ninja.errors import ValidationError
 
 from profiles.api import router as profiles_router
+from categories.api import router as categories_router
+from cards.api import router as cards_router
+
 
 api = NinjaAPI(
     title="Web 2",
@@ -11,6 +14,8 @@ api = NinjaAPI(
 )
 
 api.add_router('/', profiles_router)
+api.add_router('/', categories_router)
+api.add_router('/', cards_router)
 
 
 
