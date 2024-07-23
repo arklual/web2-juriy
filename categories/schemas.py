@@ -1,11 +1,8 @@
 from ninja import Schema, Field, ModelSchema
 from categories.models import Category
 
-class CategorySchema(ModelSchema):
-    class Meta:
-        model = Category
-        fields = ('title')
-
+class CategorySchema(Schema):
+    title: str
 
 class CategoryInBody(Schema):
     category_name: str = Field(..., required=True)
