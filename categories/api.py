@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from models import Category, Subscriber
-from schemas import CategorySchema, Error, CategoryInBody, StatusOK
+from .models import Category, Subscriber
+from .schemas import CategorySchema, Error, CategoryInBody, StatusOK
 from typing import List
 from authtoken import AuthBearer
 from ninja import Router
