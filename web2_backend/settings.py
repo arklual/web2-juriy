@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)t5u4qjiw1x1*!1*%-m8ta&7!szddyms1pj4#)98yby24&9a8j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'profiles',
     'cards',
     'categories'
+	
 ]
+
+
 
 AUTH_USER_MODEL = 'profiles.Profile'
 
@@ -52,7 +55,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'web2_backend.middleware.open_access_middleware'
 ]
+
+
+
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+)
 
 ROOT_URLCONF = 'web2_backend.urls'
 
