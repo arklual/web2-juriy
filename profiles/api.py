@@ -14,9 +14,15 @@ from django.core.mail import send_mail
 
 router = Router()
 
-@router.post('/register_and_send_code_to_email', response={201: UserProfile, 409: Error, 400: Error})
+@router.post('/register', response={201: UserProfile, 409: Error, 400: Error})
 def signup(request, user: UserSignin):
     account = Profile.objects.create_user(email=user.login, password=user.password)
+    account.save()
+    return 201, account
+
+@router.post('/send_code_to_email', response={201: UserProfile, 409: Error, 400: Error})
+def signup(request, user: UserSignin):
+    account = auth.authenticate(username=user.login, password=user.password)
     account.verf_code = str(random.randint(100000, 999999))
     account.save()
     send_mail(
@@ -27,6 +33,7 @@ def signup(request, user: UserSignin):
         fail_silently=False,
     )
     return 201, account
+
 
 @router.post('/confirm_email', response={200: StatusOK, 404: Error, 400: Error,403: Error     })
 def confirm_email(request, user: UserConfirm):

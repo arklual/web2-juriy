@@ -57,7 +57,7 @@ def del_favorite(request, card_id:int):
     )
     return (201, {'status': 'ok'})
 
-@router.post('/update_card', response={200: CardSchema, 409: Error, 400: Error}, auth=AuthBearer)
+@router.put('/update_card', response={200: CardSchema, 409: Error, 400: Error}, auth=AuthBearer)
 def create_card(request, create_card: UpdateCardSchema):
     data_from_wb = parse(create_card.target_url)
     c = get_object_or_404(Card, create_card.id)
