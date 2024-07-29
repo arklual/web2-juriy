@@ -18,7 +18,9 @@ router = Router()
 def signup(request, user: UserSignin):
     account = Profile.objects.create_user(email=user.login, password=user.password)
     account.save()
-    return 201, account
+    return 201, {
+        "login": account.email
+    }
 
 @router.post('/send_code_to_email', response={201: UserProfile, 409: Error, 400: Error,403: Error, 404: Error})
 def send_code(request, user: UserSignin):
@@ -34,7 +36,9 @@ def send_code(request, user: UserSignin):
                 [account.email],
                 fail_silently=False,
             )
-            return 201, account
+            return 201, {
+                "login": account.email
+            }
         else:
             return 403, {"details": "already verif"}
     else:
