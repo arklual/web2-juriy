@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 router = Router()
 
 @router.post('/register', response={201: UserProfile, 409: Error, 400: Error})
-def signup(request, user: UserConfirm):
+def signup(request, user: UserSignin):
     account = Profile.objects.create_user(email=user.login, password=user.password)
     account.verf_code = str(random.randint(100000, 999999))
     account.save()
@@ -29,12 +29,12 @@ def signup(request, user: UserConfirm):
     return 201, account
 
 @router.post('/confirm_email', response={200: StatusOK, 404: Error, 400: Error,403: Error     })
-def confirm_email(request, user: UserSignin):
+def confirm_email(request, user: UserConfirm):
     account = auth.authenticate(username=user.login, password=user.password)
     if account is not None:
         if account.is_verf:
             return 200, {'status': 'OK'}
-        if str(account.verf_code) == str(UserConfirm.code):
+        if str(account.verf_code) == str(user.code):
             account.is_verf = True
             account.save()
             return 200, {'status': 'OK'}
