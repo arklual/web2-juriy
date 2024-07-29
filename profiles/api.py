@@ -21,7 +21,7 @@ def signup(request, user: UserSignin):
     return 201, account
 
 @router.post('/send_code_to_email', response={201: UserProfile, 409: Error, 400: Error})
-def signup(request, user: UserSignin):
+def send_code(request, user: UserSignin):
     account = auth.authenticate(username=user.login, password=user.password)
     account.verf_code = str(random.randint(100000, 999999))
     account.save()
