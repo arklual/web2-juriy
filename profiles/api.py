@@ -20,19 +20,22 @@ def signup(request, user: UserSignin):
     account.save()
     return 201, account
 
-@router.post('/send_code_to_email', response={201: UserProfile, 409: Error, 400: Error})
+@router.post('/send_code_to_email', response={201: UserProfile, 409: Error, 400: Error,403: Error})
 def send_code(request, user: UserSignin):
-    account = auth.authenticate(username=user.login, password=user.password)
-    account.verf_code = str(random.randint(100000, 999999))
-    account.save()
-    send_mail(
-        "Code",
-        str(account.verf_code),
-        'admin@idealpick.ru',
-        [account.email],
-        fail_silently=False,
-    )
-    return 201, account
+    if not account.is_verf:
+        account = auth.authenticate(username=user.login, password=user.password)
+        account.verf_code = str(random.randint(100000, 999999))
+        account.save()
+        send_mail(
+            "Code",
+            str(account.verf_code),
+            'admin@idealpick.ru',
+            [account.email],
+            fail_silently=False,
+        )
+        return 201, account
+    else:
+        return 403, {"details": "already verif"}
 
 
 @router.post('/confirm_email', response={200: StatusOK, 404: Error, 400: Error,403: Error     })
