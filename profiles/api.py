@@ -29,8 +29,8 @@ def signup(request, user: UserConfirm):
     return 201, account
 
 @router.post('/confirm_email', response={200: StatusOK, 404: Error, 400: Error,403: Error     })
-def signin(request, user: UserSignin):
-    account = auth.authenticate(username=user.email, password=user.password)
+def confirm_email(request, user: UserSignin):
+    account = auth.authenticate(username=user.login, password=user.password)
     if account is not None:
         if account.is_verf:
             return 200, {'status': 'OK'}
