@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-)t5u4qjiw1x1*!1*%-m8ta&7!szddyms1pj4#)98yby24&9a8j
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS=True
 
 
 # Application definition
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'profiles',
     'cards',
-    'categories'
+    'categories',
+    "corsheaders"
 	
 ]
 
@@ -55,19 +57,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'web2_backend.middleware.open_access_middleware'
+    "corsheaders.middleware.CorsMiddleware"
 ]
 
 
 
-CORS_ALLOW_HEADERS = (
-    "accept",
-    "authorization",
-    "content-type",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-)
 
 ROOT_URLCONF = 'web2_backend.urls'
 
