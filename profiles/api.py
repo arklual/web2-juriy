@@ -65,7 +65,7 @@ def confirm_email(request, user: UserConfirm):
 
 @router.post('/sign-in', response={200: Token, 404: Error, 400: Error ,403: Error    })
 def signin(request, user: UserSignin):
-    account = auth.authenticate(username=user.email, password=user.password)
+    account = auth.authenticate(username=user.login, password=user.password)
     if account is not None:
         if account.is_verf:
             encoded_jwt = jwt.encode({"createdAt": datetime.utcnow().timestamp(), "user_id": account.id}, SECRET_KEY, algorithm="HS256")
