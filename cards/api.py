@@ -19,7 +19,7 @@ from categories.models import Category
 
 router = Router()
 
-@router.post('/create_card', response={201: CardSchema, 409: Error, 400: Error}, auth=AuthBearer)
+@router.post('/create_card', response={201: CardSchema, 409: Error, 400: Error}, auth=AuthBearer())
 def create_card(request, create_card: CreateCard):
     data_from_wb = parse(create_card.target_url)
     c = Card.objects.create(
@@ -33,7 +33,7 @@ def create_card(request, create_card: CreateCard):
     c.save()
     return (201, c)
 
-@router.post('/add_favorite', response={201: StatusOK, 409: Error, 400: Error}, auth=AuthBearer)
+@router.post('/add_favorite', response={201: StatusOK, 409: Error, 400: Error}, auth=AuthBearer())
 def add_favorite(request, addfavor: AddFavor):
     card = get_object_or_404(Card, id=addfavor.card_id)
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
@@ -45,7 +45,7 @@ def add_favorite(request, addfavor: AddFavor):
     ).save()
     return (201, {'status': 'ok'})
 
-@router.delete('/del_favorite', response={200: StatusOK, 409: Error, 400: Error}, auth=AuthBearer)
+@router.delete('/del_favorite', response={200: StatusOK, 409: Error, 400: Error}, auth=AuthBearer())
 def del_favorite(request, card_id:int):
     card = get_object_or_404(Card, id=card_id)
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
@@ -57,7 +57,7 @@ def del_favorite(request, card_id:int):
     )
     return (201, {'status': 'ok'})
 
-@router.put('/update_card', response={200: CardSchema, 409: Error, 400: Error}, auth=AuthBearer)
+@router.put('/update_card', response={200: CardSchema, 409: Error, 400: Error}, auth=AuthBearer())
 def create_card(request, create_card: UpdateCardSchema):
     data_from_wb = parse(create_card.target_url)
     c = get_object_or_404(Card, create_card.id)
@@ -74,7 +74,7 @@ def create_card(request, create_card: UpdateCardSchema):
     c.save()
     return (200, c)
 
-@router.get('/get_favorite', response={200: List[CardSchema], 409: Error, 400: Error}, auth=AuthBearer)
+@router.get('/get_favorite', response={200: List[CardSchema], 409: Error, 400: Error}, auth=AuthBearer())
 def get_favorite(request, start:int, count:int, sort:str):
     if sort not in ['recent', 'oldest', 'price_upscending', 'price_descending']:
         return (400, {'details': 'sort parameter is not correct!'})

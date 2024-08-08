@@ -18,7 +18,7 @@ def get_categories(request):
     categories = Category.objects.all()
     return (200, categories) 
 
-@router.get('/get_followed_categories', response = {200: List[CategorySchema], 400: Error, 409: Error}, auth=AuthBearer)
+@router.get('/get_followed_categories', response = {200: List[CategorySchema], 400: Error, 409: Error}, auth=AuthBearer())
 def get_followed_categories(request):
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
     user_id = payload['user_id']
@@ -26,13 +26,13 @@ def get_followed_categories(request):
     categories = Subscriber.objects.filter(user = user)
     return (200, categories)
 
-@router.post('/add_category', response={201: CategorySchema, 409: Error, 400: Error}, auth=AuthBearer)
+@router.post('/add_category', response={201: CategorySchema, 409: Error, 400: Error}, auth=AuthBearer())
 def add_category(request, add_category: CategoryInBody):
     category = Category.objects.create(title = add_category.category_name)
     category.save()
     return (201, category)
 
-@router.post('/follow_category', response={201: StatusOK, 409: Error, 400: Error}, auth=AuthBearer)
+@router.post('/follow_category', response={201: StatusOK, 409: Error, 400: Error}, auth=AuthBearer())
 def follow_category(request, follow_category: CategoryInBody):
     category = get_object_or_404(Category, id=follow_category.card_id)
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
@@ -44,7 +44,7 @@ def follow_category(request, follow_category: CategoryInBody):
     ).save()
     return (201, {'status': 'ok'})
 
-@router.delete('/unfollow_category', response={200: StatusOK, 409: Error, 400: Error}, auth=AuthBearer)
+@router.delete('/unfollow_category', response={200: StatusOK, 409: Error, 400: Error}, auth=AuthBearer())
 def unfollow_category(request, unfollow_category: CategoryInBody):
     category = get_object_or_404(Category, title=unfollow_category.category_name)
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
@@ -56,7 +56,7 @@ def unfollow_category(request, unfollow_category: CategoryInBody):
     )
     return (201, {'status': 'ok'})
 
-@router.delete('/del_category', response={200: StatusOK, 409: Error, 400: Error}, auth = AuthBearer)
+@router.delete('/del_category', response={200: StatusOK, 409: Error, 400: Error}, auth = AuthBearer())
 def del_category(request, delete_category: CategoryInBody):
     category = get_object_or_404(Category, title=delete_category.category_name)
     payload = jwt.decode(request.auth, SECRET_KEY, algorithms=['HS256'])
