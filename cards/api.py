@@ -27,7 +27,7 @@ def create_card(request, create_card: CreateCard):
         url=create_card.target_url,
         image=data_from_wb['img'],
         price=data_from_wb['price'],
-        category=create_card.category,
+        category=get_object_or_404(Category, title=create_card.category),
         shutdown_time=create_card.shutdown_time
     )
     c.save()
@@ -64,7 +64,7 @@ def create_card(request, create_card: UpdateCardSchema):
     if create_card.name:
         c.name = create_card.name
     if create_card.category:
-        c.category = create_card.category
+        c.category.title = get_object_or_404(Category, title=create_card.category)
     if create_card.price:
         c.price = create_card.price
     if create_card.url:
